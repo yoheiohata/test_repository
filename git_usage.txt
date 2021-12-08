@@ -1,0 +1,143 @@
+gitのコマンド
+
+ユーザー名とメールアドレスを設定する
+ユーザー名
+git config --global user.name "ユーザー名"
+
+メールアドレス
+git config --global user.name "メールアドレス"
+
+
+フォルダをgitで管理する
+管理したいディレクトリに移動 -> git init
+もし間違えたら，間違えたディレクトリに入って  rm -rf .gitで戻す
+
+
+現在の状態を確認
+$ git status
+
+
+On branch master  <-どのブランチにいるのか表示
+
+No commits yet <-コミットされてない
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	"git\343\201\256\344\275\277\343\201\204\346\226\271.txt"  <-追跡対象ではないファイルが表示
+
+コミットするには以下のコマンド
+$ git add ファイル名
+
+nothing added to commit but untracked files present (use "git add" to track)
+
+
+
+プッシュ
+プッシュ先のリモートリポジトリを指定するコマンド
+$ git remote add origin {URL}
+リモートのリポジトリにプッシュしたい(追跡する)ファイルを追加する
+$ git add ファイル名
+
+	gitで，ファイルを管理対象から外して，追跡を止める方法
+	1. gitignoreに追記する(->この時点ではインデックスにファイルが存在し追跡されている)
+		# gitignoreに追記
+		/ファイル名
+	ここは別途.gitignoreを作る必要がある
+	2. インデックスから除外(こっちだけでいけそう)
+		# gitコマンドを実行
+		$ git rm --cached ファイル名
+		
+コミットメッセージを追加
+$ git commit -m "コミットメッセージ"
+
+こんな感じになる
+[master (root-commit) 6dff9d1] test
+ 1 file changed, 56 insertions(+)
+ create mode 100644 "git\343\201\256\344\275\277\343\201\204\346\226\271.txt"
+
+
+プッシュ
+$ git push origin master
+->これはローカルのmasterブランチをリモート(origin)のmasterブランチにプッシュする
+
+こんな感じになる
+Enumerating objects: 3, done.
+Counting objects: 100% (3/3), done.
+Delta compression using up to 4 threads
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (3/3), 1.04 KiB | 1.04 MiB/s, done.
+Total 3 (delta 0), reused 0 (delta 0), pack-reused 0
+remote: 
+remote: To create a merge request for master, visit:
+remote:   https://gitrepo.soryu-sha.jp/itoyuma/ohata-project/-/merge_requests/new?merge_request%5Bsource_branch%5D=master
+remote: 
+To https://gitrepo.soryu-sha.jp/itoyuma/ohata-project.git
+ * [new branch]      master -> master
+
+
+gitブランチの作成・リモートへの登録
+1.まずgitブランチを確認
+$ git branch -a
+* master                     <-緑：ローカルのブランチ，現在のブランチには*がある
+  remotes/origin/master      <-赤：リモートのブランチ
+
+2.ローカルのリポジトリに新しくブランチを作る
+$ git checkout -b develop master	<-masterブランチからdevelopブランチを作る場合
+$ git checkout -b develop 	<-今いるブランチからdvelopブランチを作る場合
+
+出力はこんな感じ
+M	"git\343\201\256\344\275\277\343\201\204\346\226\271.txt"
+Switched to a new branch 'develop'
+
+3.ローカルのブランチを切り替える
+$ git branch ブランチ名 or
+$ git checkout ブランチ名
+
+4.リモートへの登録
+$ git push -u origin develop
+
+出力はこんな感じ
+Total 0 (delta 0), reused 0 (delta 0), pack-reused 0
+remote: 
+remote: To create a merge request for develop, visit:
+remote:   https://gitrepo.soryu-sha.jp/itoyuma/ohata-project/-/merge_requests/new?merge_request%5Bsource_branch%5D=develop
+remote: 
+To https://gitrepo.soryu-sha.jp/itoyuma/ohata-project.git
+ * [new branch]      develop -> develop
+Branch 'develop' set up to track remote branch 'develop' from 'origin'.
+
+
+5.別名のリモートのブランチにプッシュする
+$ git push origin master:develop
+	-> originはリモートを意味する
+	-> ローカルのmasterにあるdevelop
+
+2回目以降のpushは
+コミットした後，
+$ git push
+だけで良さそう．
+
+
+
+作業ディレクトリの下で
+$ git switch -c ブランチ名
+
+gitのクローンしたディレクトリでローカルに作業ブランチを作る．クローンしたブランチがdocumentsの中，pushするブランチがホームディレクトリの中
+
+
+ブランチを指定してプル
+まず，gitのブランチを最新のものに更新
+$ git fetch
+次に特定のリモートのブランチの差分を特定のローカルのブランチにプルする
+$ git pull origin REMOTE-BRANCH-NAME:LOCAL=BRANCH=NAME
+ex. originのfix-headingブランチをローカルのfeature-ohataブランチにプル
+$ git pull origin fix-heading:feature-ohata
+
+次にbranchを指定してpush(特定のローカルブランチから特定のリモートブランチpull)
+$ git push origin feature-ohata:fix-heading
+ex. ローカルのfix-headingをoriginのfix-headingにpush
+
+
+
+
+

@@ -1,0 +1,155 @@
+%
+% itlb卒業論文・修士論文作成スタイル
+%
+\setlength{\topmargin}{-1.3cm}
+\setlength{\oddsidemargin}{-2mm}
+\setlength{\evensidemargin}{-2mm}
+\setlength{\textheight}{24.0cm}
+\setlength{\textwidth}{16.0cm}
+
+\def\bm#1{\def\@bm{#1}}
+\bm{}
+\def\lab#1{\def\@lab{#1}}
+\lab{伊丹}
+\def\year#1{\def\@year{#1}}
+\year{0000}
+\def\reiwa#1{\def\@reiwa{#1}}
+\reiwa{00}
+\def\month#1{\def\@month{#1}}
+\month{00}
+\def\title#1{\def\@title{#1}}
+\title{" init_thesis.sty "にデータを入力して下さい}
+\def\titleE#1{\def\@titleE{#1}}
+\titleE{Input Title}
+\def\subtitle#1{\def\@subtitle{#1}}
+\subtitle{}
+\def\subtitleE#1{\def\@subtitleE{#1}}
+\subtitleE{}
+\def\num#1{\def\@num{#1}}
+\num{$8100000$}
+\def\author#1{\def\@author{#1}}
+\author{名前を入力して下さい}
+\def\authorE#1{\def\@authorE{#1}}
+\authorE{Input Name}
+\def\abstract#1{\def\@abstract{#1}}
+\abstract{}
+\def\abstractE#1{\def\@abstractE{#1}}
+\abstractE{}
+\def\publication#1{\def\@publication{#1}}
+\publication{}
+
+%上記データの読み込み
+\input{init_thesis.sty}
+
+\def\itlbtitle{
+{\baselineskip = 15mm
+\thispagestyle{empty}
+~ \vspace{0cm}
+\begin{center}
+ {\Large 令和\@reiwa 年度 ~ \@bm 論文} 
+\end{center}
+\vfil
+
+%j-Texの場合は\jinterchaskip,\jasciikanjiskip
+%\jintercharskip = 3.5pt plus .2pt minus .2pt
+%\jasciikanjiskip = 4.5pt plus 2pt minus 2pt
+
+%platexの場合は\kanjiskip,\xkanjiskip 
+\kanjiskip = 3.5pt plus .2pt minus .2pt
+\xkanjiskip = 4.5pt plus 2pt minus 2pt
+
+%以下j-texを用いる時は\gtから\dgに置換する事
+\begin{center}
+ {\Huge {\gt {\bf \@title}}}\\
+ {\huge \@subtitle}
+\end{center}
+ \vfil
+ \begin{center}
+  {\LARGE \gt \bf \@year 年\@month 月}
+ \end{center}
+ \vfil \vfil \vfil
+ \baselineskip = 10mm
+ \begin{center}
+  \def\@s{伊藤}
+  \ifx\@lab\@s\relax
+  {\LARGE 指導教員~~~工学博士~~~伊藤~~紘二~~~教授}
+  \else {\LARGE 指導教員~~~工学博士~~~相川~~直幸~~~教授}
+  \fi
+ \end{center}
+ \vspace*{1cm}
+ 
+ \begin{center}
+  \def\@s{卒業}
+  \ifx\@bm\@s\relax
+  {\LARGE  東京理科大学 ~ 先進工学部 \\ 電子システム工学科 ~ \@lab 研究室\\} 
+  \else {\LARGE 東京理科大学大学院 ~ 基礎工学研究科 \\ 電子応用工学専攻 
+  ~ \@lab 研究室\\
+  } \fi
+ \end{center}
+ \begin{center} {\LARGE  \@num ~ \@author} \end{center}
+ \vfil
+ \newpage
+ }
+}
+ 
+\def\makeabstract{
+\pagestyle{empty}
+ \begin{center}
+  {\Large  \gt \bf \@title}\\
+ {\large \@subtitle}
+ \end{center}
+ [\@lab 研究室]\hfill\@num ~ \@author
+ 
+ \input{\@abstract}
+ \newpage
+ 
+\begin{center}
+ {\Large \gt \bf\@titleE}\\
+ {\Large \@subtitleE}
+\end{center}
+{\gt \bf [Aikawa Laboratory]}
+\hfill\@num ~ \@authorE
+
+\input{\@abstractE}
+\newpage
+ 
+% \def\@s{修士}
+% \ifx\@bm\@s\relax
+% \begin{center}
+%  {\Large \gt \bf \@titleE}\\
+%  {\large \@subtitleE}
+% \end{center}
+% \def\@s{伊藤}
+% \ifx\@lab\@s\relax
+% {\gt \bf [Itho Laboratory]}\hfill\@num ~ \@authorE
+% \else
+% {\gt \bf [Aikawa Laboratory]}\hfill\@num ~ \@authorE
+% \fi
+ 
+% \input{\@abstractE}
+% \fi
+ }
+
+\def\makecontents{
+\clearpage
+\pagestyle{plain}
+\pagenumbering{roman}
+\setcounter{page}{1}
+\tableofcontents
+\listoffigures
+\clearpage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+\clearpage
+}
+
+\def\p@chapter{{\mc 本文}}
+\def\p@section{{\mc 本文}}
+\def\p@subsection{{\mc 本文}}
+\def\p@subsubsection{{\mc 本文}}
+\def\p@figure{{\mc 図}}
+\def\p@table{{\mc 表}}
+\let\origref=\ref
+\def\ref#1{{\origref{#1}}}
+
+\renewcommand{\bibname}{参考文献}

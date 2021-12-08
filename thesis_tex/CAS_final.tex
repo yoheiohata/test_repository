@@ -1,0 +1,324 @@
+%%「論文」，「レター」，「レター（C分冊）」，「技術研究報告」などのテンプレート
+%% v3.3 [2020/06/02]
+
+
+
+
+
+
+%% 4. 「技術研究報告」
+\documentclass[technicalreport]{ieicej}
+%\usepackage[dvips]{graphicx}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage[fleqn]{amsmath}
+\usepackage{newtxtext}% 英数字フォントの設定を変更しないでください
+\usepackage[varg]{newtxmath}% % 英数字フォントの設定を変更しないでください
+\usepackage{latexsym}
+%\usepackage{amssymb}
+
+\jtitle{指定した位置に伝送零点を有するヒルベルト変換器の一設計法}
+\jsubtitle{}
+\etitle{A Method of Designing a Hilbert Transformer with Transmission Zeros at Specified Positions}
+\esubtitle{}
+\authorlist{%
+ \authorentry[8118015@ed.tus.ac.jp]{大畠　陽平}{Yohei OHATA}{TUS}
+ \authorentry[8120528@ed.tus.ac.jp]{高尾　圭祐}{Keisuke TAKAO}{TUS}
+ \authorentry[t\_natori@rs.tus.ac.jp]{名取　隆廣}{Takahiro NATORI}{TUS}
+ \authorentry[ain@te.noda.tus.ac.jp]{相川　直幸}{Naoyuki AIKAWA}{TUS}
+% \authorentry[メールアドレス]{和文著者名}{英文著者名}{所属ラベル}
+}
+\affiliate[TUS]{東京理科大学先進工学部\\　〒125--8585 
+東京都葛飾区新宿6-3-1}{Faculty of Industrial Science and Technology, Tokyo 
+University of Science\\ 6-3-1 Niijuku, Katsushika-ku, Tokyo, 125--8585, Japan}
+%\affiliate[所属ラベル]{和文勤務先\\ 連絡先住所}{英文勤務先\\ 英文連絡先住所}
+\jalcdoi{???????????}% ← このままにしておいてください
+
+\begin{document}
+\begin{jabstract}
+%和文アブスト300字
+周波数を推定する手法として，有限次数のヒルベルト変換器を用いた方法が知られている．この手法は，推定された瞬時周波数の他に振動成分が生じるため，この成分を除去することで高精度な周波数推定が可能である．しかし一般に，ノイズを含んだ信号に対してヒルベルト変換を行う場合，ノイズを除去する帯域通過フィルタとヒルベルト変換器の縦続接続を行う必要があり，システム全体の次数が増加してしまう．そこで本稿では，阻止域を持つヒルベルト変換器上の指定した位置に伝送零点を置くことで，ノイズを取り除きながらヒルベルト変換可能なフィルタを設計する．結果として，フィルタを縦続接続する必要がなくなり，帯域通過フィルタを縦続接続する方法より，システム全体の次数が少なくなることを示す．
+\end{jabstract}
+\begin{jkeyword}
+フィルタ設計，ヒルベルト変換器，伝送零点，FIRフィルタ
+\end{jkeyword}
+\begin{eabstract}
+A method using a finite order Hilbert transform is known as a method for estimating frequency. Although this method generates oscillatory components in addition to the estimated instantaneous frequency, it is possible to estimate the frequency with high accuracy even when noise is included, by removing it with a filter that includes the transmission zero point. However, in general, when the Hilbert transform is applied to a noisy signal, a bandpass filter and a Hilbert transformer must be connected vertically, which increases the order of the whole system. In this paper, we focus on the possibility of placing transmission zeros at specific positions on the Hilbert transformer, and design a filter that can perform the Hilbert transform while removing noise. The proposed method eliminates the need to connect filters vertically, and as a result, the order of the whole system can be reduced compared to the method of connecting bandpass filters vertically.
+
+\end{eabstract}
+\begin{ekeyword}
+Hilbert Transformer,  Zeros Transmittion
+\end{ekeyword}
+\maketitle
+
+\section{はじめに}
+%6ページ
+正弦波の周波数推定はレーダーやソナー，通信，医療などの領域で幅広く研究されてきた課題である\cite{R.G.McKilliam,K.Wang,D.Rife}．
+一般に，単一正弦波に対する周波数推定を行う場合，アナログ信号であれば周波数カウンタを用いる手法，ディジタル信号の場合，相関を用いた手法やヒルベルト変換器を用いる手法が提案されている．
+周波数カウンタを用いた手法では，1周期に対して基準クロックを用いて測定し，その逆数から周波数を求めるレシプロカル方式の周波数カウンタが知られている．しかしこの手法を用いる場合，周波数が変化すると出力間隔が不等間隔になる．そのため，計測値に対して，ディジタル処理を行う場合には補完処理などの工夫が必要となるため，サンプルごとに周波数の推定値が出力されるヒルベルト変換器を用いた手法が提案されている．\\
+　ヒルベルト変換器を用いた手法では，入力を実部，出力を虚部とする複素信号の一種である解析信号の位相を時間微分し，瞬時角周波数から瞬時周波数を推定することができる．従来，ヒルベルト変換器は有限次数のFIRフィルタとして設計されるため振幅特性にリプルが生じ，出力は振動する場合がある．高尾ら\cite{高尾可変なし,高尾可変あり}は振動成分の周波数が入力周波数の偶数倍であることを理論的に示し，これを伝送零点を有する可変FIRフィルタを用いて振動成分を除去することで，低次数なヒルベルト変換器を用いても，単一正弦波の高精度な瞬時周波数推定が可能となることを示した．
+%高尾さんのやつと関連させてノイズを取れることを書きたいなら，どういうノイズが取れて，どういうノイズがダメなのか明記する必要がある．
+しかし実際にはノイズを含む信号を解析する必要がある．一般に，ノイズを含む信号に対して，ヒルベルト変換を行うためには，あらかじめ帯域通過フィルタによりノイズを低減させた後に，ヒルベルト変換器を縦続接続する方法が考えられる．しかし，帯域通過フィルタとヒルベルト変換器を1つのフィルタとして見た場合，全体の次数が増加し，結果として遅延や回路規模の増大につながり好ましくない．\\
+　そこで本稿では，阻止域を有するヒルベルト変換器に対し，指定した位置に伝送零点を置くことで，ノイズを除去しながらヒルベルト変換可能なフィルタを設計する．阻止域を有するヒルベルト変換器を設計する場合，本来であれば阻止域において十分な減衰量を確保するために多くのフィルタ次数が必要となる．しかし，特定の周波数成分にノイズが含まれることがわかっている場合，その周波数成分のみに伝送零点を入れることにより，特定のノイズのみ除去しながらヒルベルト変換を行うことができ，減衰量を確保するために必要な次数を削減することができる．
+最後に設計例を示し，提案法の有効性を確認する．
+\section{指定した位置に伝送零点を有するヒルベルト変換器}
+本章では提案するフィルタの設計問題について記す．提案するフィルタは，阻止域の指定した位置に伝送零点を有するヒルベルト変換器である．本稿で設計するフィルタの振幅理想特性を図\ref{ideal_resp}に示す．またフィルタの振幅理想特性は正規化角周波数$\omega$を用いて，
+\begin{figure}[tb]
+  \begin{center}
+  \includegraphics[width=8cm]
+      {fig/ideal_resp.pdf}
+  \end{center}
+  \caption{提案するフィルタの振幅理想特性}
+  \ecaption{Ideal amplitude response of the proposed filter}
+  \label{ideal_resp}
+\end{figure}
+\begin{equation}\label{HTの理想振幅特性}
+D(\omega)=\begin{cases}
+0\;\;\;&(0 <  \omega  < \omega_{\mathrm{s1}})\\
+1\;\;\;&(\omega_{\mathrm{p1}} <  \omega  <  \omega_{\mathrm{p2}})\\
+0\;\;\;&(\omega_{\mathrm{s2}}  <  \omega  <  \pi)\\
+\end{cases}
+\end{equation}
+と与えられる．ここで$\omega_{\mathrm{s1}}，\omega_{\mathrm{s2}}$はそれぞれ，低域と高域における阻止域端正規化角周波数とし，$\omega_{\mathrm{p1}}，\omega_{\mathrm{p2}}$はそれぞれ低域と高域における通過域端正規化角周波数とした．まず，$N$次のFIRフィルタの周波数応答は以下の式で書き表せる．
+\begin{equation}
+H(\omega)=\sum_{n=0}^N{h(n)e^{-j{\omega}n}}
+\end{equation}
+　まず，特定の周波数のノイズを除去するために，伝送零点フィルタとFIRヒルベルト変換器を直接縦続接続する場合を考える．ここで，伝送零点フィルタの周波数応答を$H_{\mathrm{n}}(\omega)$，阻止域を有するFIRヒルベルト変換器の周波数応答を$H_{\mathrm{ht}}(\omega)$とすると，フィルタの周波数応答$H_{\mathrm{nHT}}(\omega)$は$H_{\mathrm{n}}(\omega)$と$H_{\mathrm{ht}}(\omega)$の縦続接続として
+\begin{eqnarray}\label{伝送零点周波数応答}
+  \lefteqn{
+  H_{\mathrm{nHT}}(\omega)={H_{\mathrm{n}}(\omega)}{H_{\mathrm{ht}}(\omega)}}\quad\nonumber\\
+&\!=\!& \prod_{i=1}^{B} \{1\!-\!2\cos\left(\omega_{bi}\right)e^{-j{\omega}}\!+\!e^{-2j{\omega}}\}\sum_{k=0}^{2(M-B)}{h_{\mathrm{ht}}}\left(k\right)e^{-j{\omega}k}
+\end{eqnarray}
+によって表される．ただし，2$M$をシステム全体のフィルタ次数，$B$を伝送零点の個数とする．さらに$i$は伝送零点に対するインデックスになっており，各$i$における角周波数$\omega_{bi}$が今回指定する伝送零点の正規化角周波数の値となる．図\ref{nHT}にフィルタ次数30における$H_{\mathrm{n}}(\omega)$，$H_{\mathrm{ht}}(\omega)$，$H_{\mathrm{nHT}}(\omega)$の振幅特性を示す．
+\begin{figure}[tb]
+  \begin{center}
+  \includegraphics[width=8cm]
+      {fig/nHT.pdf}
+  \end{center}
+  \caption{伝送零点フィルタの振幅特性}
+  \ecaption{Frequency response of a notch filter}
+  \label{nHT}
+\end{figure}
+図\ref{nHT}からわかる通り伝送零点フィルタに対して阻止域を有するヒルベルト変換器を直接縦続接続すると通過域の特性が担保されない．したがって後段のヒルベルト変換器の周波数応答$H_{\mathrm{ht}}(\omega)$は伝送零点の特性を考慮する必要がある．\\
+　そこで伝送零点フィルタの周波数応答を$H_{\mathrm{n}}(\omega)$，伝送零点の特性を考慮した後段のフィルタの周波数応答$\hat{H}_{\mathrm{ht}}(\omega)$とすると提案するフィルタの周波数応答$H_{\mathrm{nCHT}}(\omega)$は
+\begin{eqnarray}\label{nCHT伝送零点周波数応答}
+  \lefteqn{
+  H_{\mathrm{nCHT}}(\omega)={H_{\mathrm{n}}(\omega)}{\hat{H}_{\mathrm{ht}}(\omega)}}\quad\nonumber\\
+&\!=\!& \prod_{i=1}^{B} \{1\!-\!2\cos\left(\omega_{bi}\right)e^{-j{\omega}}\!+\!e^{-2j{\omega}}\}\sum_{k=0}^{2(M-B)}{\hat{h}_{\mathrm{ht}}}\left(k\right)e^{-j{\omega}k}
+\end{eqnarray}
+と書き表される．式\eqref{nCHT伝送零点周波数応答}を偶数次・奇対称インパルス応答FIRフィルタとして設計すると，その振幅特性は
+\begin{eqnarray}\label{可変の振幅特性}
+  \lefteqn{
+  A_{\mathrm{nCHT}}(\omega)=A_{\mathrm{n}}(\omega)\hat{A}_{\mathrm{ht}}(\omega)
+  }\quad\nonumber\\
+  &\!=\!& \prod_{i=1}^{B} 2\{\cos\left(\omega\right)\!-\!\cos\left(\omega_{bi}\right)\}\sum_{k=0}^{M-B}\hat{a}_{\mathrm{ht}}\left(k\right)\sin\left(k\omega\right) 
+\end{eqnarray}
+と与えられる．ただし$\hat{h}_{\mathrm{ht}}(k)$は以下の式で定義される\cite{陶山}．
+\begin{equation}\label{振幅特性のフィルタ係数}
+\hat{h}_{\mathrm{ht}}(k)=2\hat{a}_{\mathrm{ht}}(M-B-k)\;\;\;\;\;\;(k=1,2,\cdots,M-B)
+\end{equation}
+設計するフィルタの振幅理想特性を式\eqref{HTの理想振幅特性}より$D(\omega)$，近似誤差に対する重み関数を$W(\omega)$とすると，重みつき誤差関数は
+\begin{eqnarray}\label{阻止域に伝送零点を有するHTの誤差関数}
+E(\omega)
+&=&W(\omega)[D(\omega)-A_{\mathrm{nCHT}}(\omega)]\nonumber\\
+&=&W(\omega)[D(\omega)-A_{\mathrm{n}}(\omega)\hat{A}_{\mathrm{ht}}(\omega)]
+\end{eqnarray}
+と書き表せる．$A_{\mathrm{n}}(\omega)$は既知の特性であるため，式\eqref{阻止域に伝送零点を有するHTの誤差関数}は
+\begin{eqnarray}\label{誤差関数}
+  E(\omega)
+&=&W(\omega)A_{\mathrm{n}}(\omega)\left[{\frac{D(\omega)}{A_{\mathrm{n}}(\omega)}}-\hat{A}_{\mathrm{ht}}(\omega)\right]\nonumber\\
+&=&\tilde{W}(\omega)\left[\tilde{D}(\omega)-\hat{A}_{\mathrm{ht}}(\omega)\right]
+\end{eqnarray}
+と書き換えられる．ただし$\tilde{W}(\omega)$，$\tilde{D}(\omega)$はそれぞれ
+\begin{eqnarray}
+\tilde{W}(\omega)=W(\omega)A_{\mathrm{n}}(\omega)
+\end{eqnarray}
+\begin{eqnarray}
+\tilde{D}(\omega)={D(\omega)/A_{\mathrm{n}}(\omega)}
+\end{eqnarray}
+である．式\eqref{誤差関数}で与えられる誤差関数に対してRemezのアルゴリズム\cite{Remez}を用いることで，理想特性との最大誤差を最小化する，すなわち前段の伝送零点の特性を考慮したヒルベルト変換器のフィルタ係数$\hat{h}_{\mathrm{ht}}(k)$が求まり，阻止域の指定した位置に伝送零点を有するヒルベルト変換器の設計を行うことができる．以上のように設計されたフィルタを以降の章ではnCHTとする．
+\section{シミュレーション}
+\subsection{提案法と比較するフィルタの設計法}
+ここでは，2章で設計したnCHTの性能を評価するためのフィルタnBPHTの設計法について述べる．nCHTでは伝送零点の特性を考慮したヒルベルト変換器を後段に縦続接続したのに対し，nBPHTでは伝送零点の特性を帯域通過フィルタとして補正し，さらにヒルベルト変換器を縦続接続した．式\eqref{比較}に，その周波数応答$H_{\mathrm{nBPHT}}(\omega)$を示す．\begin{equation}\label{比較}
+H_{\mathrm{nBPHT}}(\omega)=H_{\mathrm{n}}(\omega)\hat{H}_{\mathrm{bp}}(\omega)H_{\mathrm{ht}}(\omega)
+\end{equation}
+ただし，伝送零点フィルタの周波数応答$H_{\mathrm{n}}(\omega)$，補正するための帯域通過フィルタの周波数応答を$\hat{H}_{\mathrm{bp}}(\omega)$，ヒルベルト変換器の周波数応答$H_{\mathrm{ht}}(\omega)$とした．
+%図\ref{nBPHT}にフィルタ次数30における振幅特性を示す．図の青が$H_n(\omega)$，赤が$\hat{H}_{\mathrm{bp}}(\omega)$，黄が$H_{\mathrm{ht}}(\omega)$，紫が$H_{\mathrm{nBPHT}}(\omega)$を表す．
+%\begin{figure}[tb]
+ % \begin{center}
+  %\includegraphics[width=8cm]
+ %     {fig/nBPHT.pdf}
+  %\end{center}
+  %\caption{伝送零点を有する帯域通過フィルタの振幅特性}
+  %\ecaption{Amplitude characteristics of a bandpass filter with zero transmissions}
+  %\label{nBPHT}
+%\end{figure}
+
+\subsection{設計例}
+ここでは，nBPHTとnCHTの比較を行い，提案するフィルタ(nCHT)が優位であることを示す．フィルタの設計例として，伝送零点は正規化周波数で0.1と0.15とした．また，低域阻止域端正規化周波数，高域阻止域端正規化周波数をそれぞれ0.2，0.8，低域通過域端正規化周波数，高域通過域端正規化周波数をそれぞれ0.3，0.7とした．帯域の重みは比較を簡単にするため，阻止域と通過域の重みを全て1にした．さらに，システム全体の次数を30とし，伝送零点の数をそれぞれ$B=2$とすると，伝送零点フィルタの次数は伝送零点の個数の2倍であるため，nHT，nCHTにおけるヒルベルト変換器の次数は26である．nBPHTにおいては，帯域通過フィルタとヒルベルト変換器の2種類で構成されるため，合計の次数が26となるように4〜22の間でそれぞれ割り当てた．\\
+　上述の条件のもとで，今回行う比較は次の2つである．はじめに，システム全体の次数を30に固定した際の，nBPHTとnCHTの比較，もう1つがnCHT全体の次数を30に固定した時に得られる理想特性との最大誤差を上回るために必要なnBPHT全体のシステムの次数である．特に2つ目の比較に関しては，nBPHTの理想特性との最大誤差のうち，次数の割り当てによって得られる最大誤差の最小値が，nCHTの最大誤差を上回った時点でプログラムを終了した．
+\subsection{nBPHTとnCHTの比較}
+ここではnBPHTとnCHTの比較結果を示す．次数の割り当てのうち，nBPHTは帯域通過フィルタの次数が8，ヒルベルト変換器の次数が18のものと，帯域通過フィルタの次数が20，ヒルベルト変換器の次数が6のものをそれぞれ図\ref{n_sta_rear8ht18}と図\ref{n_sta_rear20ht6}に示した．青がnBPHT，赤がnCHTである．また次の表\ref{nBPHTの評価値}に次数30におけるnBPHTの帯域通過フィルタの次数$N_{\mathrm{\mathrm{BP}}}$とヒルベルト変換器の次数$N_{\mathrm{HT}}$及び理想特性との最大誤差(nBPHTの評価値)を示す．
+\begin{figure}[tb]
+  \begin{center}
+  \includegraphics[width=8cm]
+      {fig/nCHT/n_sta_rear8ht18.pdf}
+  \end{center}
+  \caption{nBPHT(帯域通過フィルタの次数8，ヒルベルト変換器の次数18)とnCHTの振幅特性の比較}
+  \ecaption{Comparison of amplitude characteristics of nBPHT(order 8 of bandpass filter and 18 of Hilbert transformer) and nCHT}
+  \label{n_sta_rear8ht18}
+\end{figure}
+\begin{figure}[tb]  
+  \begin{center}
+  \includegraphics[width=8cm]
+      {fig/nCHT/n_sta_rear20ht6.pdf}
+  \end{center}
+  \caption{nBPHT(帯域通過フィルタの次数20，ヒルベルト変換器の次数6)とnCHTの振幅特性の比較}
+  \ecaption{Comparison of amplitude characteristics of nBPHT(order 20 of bandpass filter and 6 of Hilbert transformer) and nCHT}
+  \label{n_sta_rear20ht6}
+\end{figure}
+\begin{table}[tb]
+  \caption{nBPHTの各次数と評価値}
+  \label{nBPHTの評価値}
+  \centering
+  \begin{tabular}{ccc}
+    \hline
+     $N_{\mathrm{\mathrm{BP}}}$  &  $N_{\mathrm{HT}}$ &  nBPHTの評価値 \\
+    \hline \hline
+    4  & 22  & 0.5513 \\
+    6  & 20  & 0.3918 \\
+    \textbf{8}  & \textbf{18}  & \textbf{0.2364} \\
+    10  & 16  & 0.2944 \\
+    12  & 14  & 0.2836 \\
+    14  & 12  & 0.2919 \\
+    16  & 10  & 0.2730 \\
+    18  & 8  & 0.3987 \\
+    20  & 6  & 0.3853 \\
+    22  & 4  & 0.7756 \\
+    \hline
+  \end{tabular}
+\end{table}
+またnCHTの理想特性との最大誤差は0.0278であった．図\ref{n_sta_rear8ht18}と\ref{n_sta_rear20ht6}よりnBPHTとnCHTを比較すると通過域の特性はnBPHTよりnCHTの方がリプルの小さい特性であることが確認できる．また，表\ref{nBPHTの評価値}より帯域通過フィルタの次数が8，ヒルベルト変換器の次数が18のとき，全ての次数の割り当てに対して，最大誤差が最も小さくなり，その値が0.2364となった．これにより，nBPHTとnCHTのシステム全体の次数が同じ条件下では，nCHTの方が理想特性に対して誤差が小さくなることが確認された．
+\subsection{nCHTの精度を上回るために必要なnBPHTのフィルタ次数}
+ここではnCHTのシステム全体の次数を30にした際の理想特性との誤差を上回るnBPHTのシステム全体の次数を示す．図\ref{n_sta_rear8ht18}，\ref{n50rear24ht22}，\ref{n74rear32ht38}に全体の次数が30，50，74におけるnBPHTとnCHTの比較結果を示す．青がnBPHT，赤がnCHTである．まずnBPHT全体の次数を30にしたときの残りの帯域通過フィルタとヒルベルト変換器の次数の割り当てのうち，理想特性との最大誤差が最小になる値を，システム全体のある次数におけるnBPHTの評価値とした．この値をnCHTの評価値，すなわちnCHTの理想特性との最大誤差と比較し，nBPHTの評価値がnCHTの評価値より大きければnBPHT全体の次数を2つ上げ，nBPHTの評価値がnCHTの評価値より小さければプログラムを終了するようにプログラムを構成した．以下にその結果を，nBPHTのフィルタ次数$N$，帯域通過フィルタの次数$N_{\mathrm{\mathrm{BP}}}$，ヒルベルト変換器の次数$N_{\mathrm{HT}}$および評価値を表\ref{n_variable_nBPHTの評価値}に示す．
+\begin{table}[h]
+  \caption{nBPHTの各次数と評価値の値}
+  \label{n_variable_nBPHTの評価値}
+  \centering
+  \begin{tabular}{cccc}
+    \hline
+    $N$  & $N_{\mathrm{\mathrm{BP}}}$  &  $N_{\mathrm{HT}}$ &  nBPHTの評価値\\
+    \hline \hline
+    30  & 8  & 18 & 0.2364\\
+    40  & 18  & 18 & 0.1713\\
+    50  & 24  & 22 & 0.0794\\
+    60  & 26  & 28 & 0.0518\\
+    70  & 32  & 34 & 0.0334\\
+    72  & 34  & 34 & 0.0320\\
+    \textbf{74}  & \textbf{32}  & \textbf{38} & \textbf{0.0277}\\
+    \hline
+  \end{tabular}
+\end{table}
+またnCHTの評価値は0.0278であった．表\ref{n_variable_nBPHTの評価値}より，次数が上がるにつれてnBPHTの評価値が小さくなっているのが確認できる．最終的に全体の次数が74になった段階でnCHTの評価値よりnBPHTの評価値が小さくなった．
+\begin{figure}[tb]
+  \begin{center}
+  \includegraphics[width=8cm]
+      {fig/nvariable/n50rear24ht22.pdf}
+  \end{center}
+  \caption{フィルタ次数50のnBPHT(帯域通過フィルタの次数24，ヒルベルト変換器の次数22)とnCHTの振幅特性の比較}
+  \ecaption{Comparison of amplitude characteristics of nBPHT with filter order 50 (order 24 of bandpass filter, order 22 of Hilbert transformer) and nCHT}
+  \label{n50rear24ht22}
+\end{figure}
+\begin{figure}[tb]
+  \begin{center}
+  \includegraphics[width=8cm]
+      {fig/nvariable/n74rear32ht38.pdf}
+  \end{center}
+  \caption{フィルタ次数74のnBPHT(帯域通過フィルタの次数32，ヒルベルト変換器の次数38)とnCHTの振幅特性の比較}
+  \ecaption{Comparison of amplitude characteristics of nBPHT with filter order 74 (order 32 of bandpass filter, order 38 of Hilbert transformer) and nCHT}
+  \label{n74rear32ht38}
+\end{figure}
+\section{むすび}
+本稿では，阻止域の指定した位置に伝送零点を有するヒルベルト変換器の設計法を提案した．提案するフィルタの周波数応答は伝送零点フィルタと前段の伝送零点の特性を考慮したヒルベルト変換器の縦続接続として設計し，Remezのアルゴリズムを解くことで理想特性との最大誤差を最小化するヒルベルト変換器のフィルタ係数を求めた．設計例により，提案するフィルタnCHTを，伝送零点の特性を帯域通過フィルタで補正し，ヒルベルト変換器を縦続接続したフィルタnBPHTで比較した．その結果，システム全体のフィルタ次数を固定した場合，nBPHTとnCHTの理想特性との最大誤差を比較すると，nBPHTよりnCHTの最大誤差の方が小さくなったことが示された．さらに，あるフィルタ次数におけるnCHTの最大誤差を超えるために必要なnBPHTの次数は，nCHTの次数よりnBPHTの次数の方が大きくなることが示された．以上2つの比較を行うことにより，提案法によって，低次数なシステムで特定の周波数成分を除去するヒルベルト変換器の設計が可能となることを示した．
+
+\appendix
+\begin{table}[h]
+  \caption{各周波数における出力信号のSN比}
+  \label{n_variable_nBPHTの評価値}
+  \centering
+  \begin{tabular}{cccc}
+    \hline
+    $f$ & $\mathrm{SNR}_{\mathrm{out}}$  & $\mathrm{SNR}_{\mathrm{nBPHT}}$  &  $\mathrm{SNR}_{\mathrm{nCHT}}$ \\
+    \hline \hline
+    0.30  & 250.8537  & 248.8329 & 250.9648\\
+    0.38  & 248.2200  & 250.8492 & 248.2445\\
+    0.46  & 245.1509  & 245.1710 & 245.1627\\
+    0.54  & 246.9036  & 247.0503 & 246.8666\\
+    0.62  & 245.0778  & 245.6082 & 245.0928\\
+    0.70  & 241.9867  & 239.0478 & 242.1149\\
+    \hline
+  \end{tabular}
+\end{table}
+
+\begin{table}[h]
+  \caption{\textmc{各周波数における出力信号のSN比}}
+  \label{n_variable_nBPHTの評価値}
+  \centering
+  \begin{tabular}{cccc}
+    \hline
+    $f$ & $\mathrm{SNR}_{\mathrm{out}}-\mathrm{SNR}_{\mathrm{nBPHT}}$  & $\mathrm{SNR}_{\mathrm{out}}-\mathrm{SNR}_{\mathrm{nCHT}}$\\
+    \hline \hline
+    0.30  & 2.0208  & 0.1111\\
+    0.38  & 2.6292  & 0.0245\\
+    0.46  & 0.0200  & 0.0118\\
+    0.54  & 0.1467  & 0.0370\\
+    0.62  & 0.5304  & 0.0150\\
+    0.70  & 2.9389  & 0.1282\\
+    \hline
+  \end{tabular}
+\end{table}
+
+%\!(\!正規化周波数\!)
+\begin{table}[h]
+  \caption{0.1 0.15}
+  \label{n_variable_nBPHTの評価値}
+  \centering
+  \begin{tabular}{lllccccccccccccccccc}
+    \hline
+    $雑音周波数$ & $\mathrm{HT}\;\;[\mathrm{dB}]$  & $\mathrm{nCHT}\;\;[\mathrm{dB}]$\\
+    \hline \hline
+    ---  & 246.3655  & 246.4077\\
+   0.1 & 32.0311  & \textbf{138.8690}\\
+   0.15 & 41.5355  & \textbf{143.9050}\\
+   0.1 0.15  & 31.5697  & \textbf{137.6843}\\
+    \hline
+  \end{tabular}
+\end{table}
+
+
+
+%\bibliographystyle{sieicej}
+%\bibliography{myrefs}
+\begin{thebibliography}{99}% 文献数が10未満の時 {9}
+\bibitem{R.G.McKilliam}
+R.G.McKilliam, B.G.Quinn, I.V.L.Clarkson, and B.Moran,"Frequency Estimation by Phase Unwrapping," IEEE Transactions on Signal Processing, vol.58, no.6, pp.2953-2963, June 2010.
+
+\bibitem{K.Wang}
+K.Wang, Y.Tu, and H. Yan,"On statistical analysis of least squares matching methods for frequency estimation of a real sinusoid," Digital Signal Processing, vol.104, p.102783, Sept. 2020.
+
+\bibitem{D.Rife}
+D.Rife and R Boorstyn,"Single tone parameter estimation from discrete-time observations, " IEEE Transactions on Information Theory, vol.20, no.5, pp.591-598, Sept. 1974
+
+\bibitem{高尾可変なし}
+高尾圭祐，名取隆廣，宮田統馬，相川直幸，"有限次数ヒルベルト変換器を用いた高精度瞬時周波数の一推定法，"第34回信号処理シンポジウム，vol.119，no.185，pp.31-45，Aug．2019．
+
+\bibitem{高尾可変あり}
+高尾圭祐，名取隆廣，相川直幸，ノッチフィルタを用いた有限次数ヒルベルト変換器による瞬時周波数推定の高精度化，"信号技報，vol.119，no.185，pp.31-45，Aug．2019
+
+\bibitem{Remez}
+J. McClellan, T.Parks, and L.Rabiner,"A computer program for desiging optimum FIR linear phase digital filters," IEEE Transactions on Audio and Electroacoustics, vol.21, no.6, pp.506-526, Dec. 1973
+
+\bibitem{陶山}
+陶山健二，ディジタルフィルタ原理と設計法，設計時術シリーズ，科学情報出版，2018.
+\end{thebibliography}
+
+\end{document}

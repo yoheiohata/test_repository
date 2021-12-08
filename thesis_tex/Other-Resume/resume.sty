@@ -1,0 +1,64 @@
+\headsep = 4mm
+\headheight = 4mm
+\textheight = 24.8cm
+%\textwidth = 16.0 cm
+\textwidth = 17.0 cm
+\columnsep = 1pc
+%\columnsep = 8mm
+\parindent = 1zw
+
+\topmargin = -5mm
+\oddsidemargin = -3.2mm
+\evensidemargin = -3.2mm
+
+%\jintercharskip=2pt plus .4pt minus .5pt
+%\jasciikanjiskip=2.5pt plus 1pt minus 1pt
+\kanjiskip=0pt plus .4pt minus .5pt
+\xkanjiskip=2.5pt plus 1pt minus 1pt
+
+\def\著者#1{\def\@著者{#1}}
+\def\研究室#1{\def\@研究室{#1}}
+\def\学籍番号#1{\def\@学籍番号{#1}}
+\def\題名#1{\def\@題名{#1}}
+\def\maketitle{%
+\setlength{\baselineskip}{15pt}
+%\twocolumn[ 
+\begin{center}
+{\hspace{-2mm}\Large \@題名 \vspace{10pt}\par \@研究室 ~~ \@学籍番号 ~~\@著者\vspace{10pt}\par}
+\end{center}
+%\end{center}]
+}
+%\pagestyle{empty}
+
+\makeatletter
+  \def\ps@testheadings{\let\@mkboth\markboth 
+  \def\@oddfoot{}\def\@evenfoot{}
+  \def\@oddhead{\hbox {}\hfil {\small ~~\@学籍番号 ~~\@著者}}
+} 
+
+\def\thebibliography#1{\section*{\refname\@mkboth
+ {\refname}{\refname}} \footnotesize \baselineskip=10pt \list 
+ {(\arabic{enumi})}{\settowidth\labelwidth{[#1]}\leftmargin\labelwidth
+ \advance\leftmargin\labelsep
+ \usecounter{enumi}}
+ \def\newblock{\hskip .11em plus .33em minus .07em}
+ \sloppy\clubpenalty4000\widowpenalty4000
+ \sfcode`\.=1000\relax}
+\let\endthebibliography=\endlist
+
+\def\the発表論文#1{%
+\vspace{-5mm}
+\section*{発表論文}
+ \footnotesize \baselineskip=10pt \list 
+ {(\arabic{enumi})}{\settowidth\labelwidth{[#1]}\leftmargin\labelwidth
+ \advance\leftmargin\labelsep
+ \usecounter{enumi}}
+ \def\newblock{\hskip .11em plus .33em minus .07em}
+ \sloppy\clubpenalty4000\widowpenalty4000
+ \sfcode`\.=1000\relax}
+\let\endthe発表論文=\endlist
+
+\makeatother
+\pagestyle{testheadings}
+
+

@@ -1,0 +1,83 @@
+%原稿要旨のtexファイル
+%事務提出用の要旨
+%事務の指示に従って余白及び行数、文字数を設定する事
+
+\documentclass[12pt,a4paper]{jarticle}
+%余白の設定(デフォルトで上部と左部に"1in"の余白があるので消去)
+\setlength{\hoffset}{-1in}
+\setlength{\voffset}{-1in}
+
+%テキスト部の上部分の設定
+%%%%%%%%%%%%%上余白の設定%%%%%%%%%%%%%
+\setlength{\topmargin}{30mm}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%			
+\setlength{\headheight}{0mm}
+\setlength{\headsep}{0mm}
+%フッター部を消す
+\setlength{\footskip}{0mm}
+\pagestyle{empty}
+%欄外部分を消す
+\setlength{\marginparsep}{0mm}
+\setlength{\marginparwidth}{0mm}
+%左の幅を消す
+%%%%%%%%%%%%%左余白の設定%%%%%%%%%%%%%%
+\setlength{\oddsidemargin}{18mm}		
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%テキスト部の幅と高さを指定
+%%%%%%%%%%%%%右余白の設定%%%%%%%%%%%%%%%%%%%%%
+\setlength{\textheight}{247mm}			%297mm(A4縦の長さ)-(上余白)-(下余白)
+%%%%%%%%%%%%%下余白の設定%%%%%%%%%%%%%%%%%%%%%
+\setlength{\textwidth}{174mm}			%210mm(A4縦の長さ)-(左余白)-(右余白)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%文字数及び行数指定のためのマクロ(\mojiparline,\linesparpage)を定義
+\setlength{\topskip}{0mm}
+\makeatletter
+\def\mojiparline#1{
+    \newcounter{mpl}
+    \setcounter{mpl}{#1}
+    \@tempdima=\linewidth
+    \advance\@tempdima by-\value{mpl}zw
+    \addtocounter{mpl}{-1}
+    \divide\@tempdima by \value{mpl}
+    \advance\kanjiskip by\@tempdima
+    \advance\parindent by\@tempdima
+}
+\makeatother
+\def\linesparpage#1{
+    \baselineskip=\textheight
+    \divide\baselineskip by #1
+}
+
+\begin{document}
+%%%%%%% 一行あたり文字数の指定%%%%%%%
+\mojiparline{35}
+%%%%%%%1ページあたり行数の指定%%%%%%%			
+\linesparpage{30}					
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%論文題目(1,2行目に記述)%%%%%%%
+\begin{center}
+\noindent
+{\Large 論文タイトルを入力}
+\end{center}
+
+%%%改行(タイトルが1行の場合は3zw,2行の場合は2zw)%%%
+\vspace{2zw}
+
+%%%学籍番号,専攻名,氏名,指導教員名(5,6行目)%%%
+\noindent
+\hspace{17zw} %18文字目から書き出せるよう17文字分移動
+\begin{tabular}{lll}
+8100000 & 電子応用工学専攻 & 氏名を入力 \\
+指導教員 & 工学博士 & 伊丹 誠
+\end{tabular}
+
+%%%改行(要旨本文が9行目からとなるようにする)%%%
+\vspace{2zw}
+
+%%%要旨本文(ここから本文を記述)%%%
+本文を入力
+
+\end{document}
+

@@ -1,0 +1,42 @@
+%発表資料用texファイル
+%発表論文リスト1ページ、論文内容2ページ(2カラム)の計3ページ
+
+\documentclass[11pt]{jarticle}
+%resume.styとセットで使用して下さい
+\usepackage{resume}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{amsmath,amssymb}
+%%%%%%%%%%%%%タイトル、氏名等%%%%%%%%%%%%%
+\題名{{\bf 修士論文タイトル}}
+\著者{氏名}
+\学籍番号{8100000}
+\研究室{伊丹研究室}
+\begin{document}
+\maketitle
+
+%%%%%%%%%%%%%発表論文リスト%%%%%%%%%%%%%
+\begin{center}
+\section*{\Large {\bf 発表論文リスト}}
+\end{center}
+\addcontentsline{toc}{chapter}{発表論文}
+\def\essection#1{\section*{#1}\addcontentsline{toc}{section}{#1}}
+
+\essection{A.大会}
+\begin{itemize}
+	\item 論文タイトル
+\end{itemize}
+
+\essection{B.口頭大会}
+
+\newpage
+\twocolumn
+
+%%%%%%%%%%%%%内容%%%%%%%%%%%%%%%
+\section*{\Large {\bf 論文概要}}
+\section{はじめに}
+\section{提案方式}
+\section{結果}
+\section{まとめ}
+\end{document}
+
+
